@@ -37,7 +37,7 @@ void loop()
      String closeCommand = "AT+CIPCLOSE="; 
      closeCommand+=connectionId; 
      closeCommand+="\r\n";    
-     sendData(closeCommand,3000,DEBUG);
+     sendData(closeCommand,3500,DEBUG);
     }
   }
 }
@@ -58,9 +58,9 @@ String sendData(String command, const int timeout, boolean debug)
     if(debug)                                                        
     {
 
-      if(response.indexOf("GET /api/dIm@baCNQfxpWIWk8u*BvWSBgHmFx0") != -1){
+      if(response.indexOf("GET /api/dbbygqwfjcbozcwdqukrykxlcldgpqksrlq") != -1){
 
-        Serial.print("Caiu na rota papai");
+       
         digitalWrite(LED, HIGH);
         delay(1000);
         digitalWrite(LED, LOW);
@@ -68,7 +68,7 @@ String sendData(String command, const int timeout, boolean debug)
         
 
       }
-      //Serial.print(response);
+      Serial.print(response);
       
     }    
     return response;                                                  
@@ -76,6 +76,8 @@ String sendData(String command, const int timeout, boolean debug)
 
 void init_config()
 {
+
+  Serial.print("Config Call..");
   sendData("AT+RST\r\n", 2000, DEBUG);                                                  
   sendData("AT+CWJAP=\"AP-02_2GHz\",\"riceferteste\"\r\n", 2000, DEBUG);        
   delay (3000);
