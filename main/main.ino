@@ -3,6 +3,7 @@ SoftwareSerial esp8266(10,11);
 #define SpeedS 115200              
 #define DEBUG true       
 #define LED 8                          
+#define SERVER true
 
 void setup()
 
@@ -24,20 +25,20 @@ void loop()
      delay(1000);
  
      int connectionId = esp8266.read()-48;                                                
-     String webpage = "<h1>ok</h1>";
-     String cipSend = "AT+CIPSEND=";
+     String webpage = "ok";
+     String cipSend = "AT+CIPSEND=okok";
      cipSend += connectionId;
      cipSend += ",";
      cipSend +=webpage.length();
      cipSend +="\r\n";
      
-     sendData(cipSend,1000,DEBUG);
-     sendData(webpage,1000,DEBUG);
+     sendData(cipSend,1500,DEBUG);
+     //sendData(webpage,1500,DEBUG);
  
      String closeCommand = "AT+CIPCLOSE="; 
      closeCommand+=connectionId; 
      closeCommand+="\r\n";    
-     sendData(closeCommand,3500,DEBUG);
+     sendData(closeCommand,3000,DEBUG);
     }
   }
 }
@@ -55,10 +56,10 @@ String sendData(String command, const int timeout, boolean debug)
         response+=c;                                                  
       }  
     }    
-    if(debug)                                                        
+    if(SERVER || DEBUG)                                                        
     {
 
-      if(response.indexOf("GET /api/dbbygqwfjcbozcwdqukrykxlcldgpqksrlq") != -1){
+      if(response.indexOf("GET /dbbygqwfjcbo") != -1){
 
        
         digitalWrite(LED, HIGH);
@@ -87,6 +88,6 @@ void init_config()
   delay (1500);
   sendData("AT+CIPMUX=1\r\n", 1500, DEBUG);                                             
   delay (1500);
-  sendData("AT+CIPSERVER=1,80\r\n", 1500, DEBUG);                                     
+  sendData("AT+CIPSERVER=1,76\r\n", 1500, SERVER);                                     
 
 }
