@@ -5,6 +5,8 @@ SoftwareSerial esp8266(10,11);
 #define LED 8                          
 #define SERVER true
 
+long int time_before = millis() + 4000; 
+int contador = 0;
 void setup()
 
 {
@@ -12,36 +14,67 @@ void setup()
   esp8266.begin(SpeedS);     
   pinMode(LED, OUTPUT);
   init_config();   
+  
                             
 }
 
 void loop()                                                         
 {
 
+
+  //if((time_before+6000) > millis()){
+
+      //Serial.print("Teste de connn.... ");
+      //sendData("AT+CWJAP?\r\n", 2000, DEBUG);
+       //esp8266.print("AT+CWJAP?\r\n");
+
+       //time_before = millis(); 
+    
+  //}
+  
+    
+  
   if(esp8266.available())                                           
  {    
-    if(esp8266.find("+IPD,"))
-    {
-     delay(1000);
- 
-     int connectionId = esp8266.read()-48;                                                
-     String webpage = "ok";
-     String cipSend = "AT+CIPSEND=okok";
-     cipSend += connectionId;
-     cipSend += ",";
-     cipSend +=webpage.length();
-     cipSend +="\r\n";
-     
-     sendData(cipSend,1500,DEBUG);
-     //sendData(webpage,1500,DEBUG);
- 
-     String closeCommand = "AT+CIPCLOSE="; 
-     closeCommand+=connectionId; 
-     closeCommand+="\r\n";    
-     sendData(closeCommand,3000,DEBUG);
+   
+      if(esp8266.find("+IPD,")){
+    
+        int connectionId = esp8266.read()-48;
+       
+        String response = "";
+           contador = 0;
+           
+         while(esp8266.available())                                      
+          {
+            char c = esp8266.read();                                     
+            response+=c;    
+                                                       
+          }  
+          
+           if(response.indexOf("/zdbbyrs") != -1){
+    
+            Serial.print("Entrou no IF");
+    
+           
+            digitalWrite(LED, HIGH);
+            delay(1000);
+            digitalWrite(LED, LOW);
+    
+             String closeCommand = "AT+CIPCLOSE="; 
+            closeCommand+=connectionId; 
+            closeCommand+="\r\n"; 
+            esp8266.print(closeCommand);
+            delay(1000);
+    
+          }
+    
+           
+        }
     }
-  }
+
 }
+
+
 
 String sendData(String command, const int timeout, boolean debug)
 {
@@ -56,22 +89,17 @@ String sendData(String command, const int timeout, boolean debug)
         response+=c;                                                  
       }  
     }    
-    if(SERVER || DEBUG)                                                        
-    {
 
-      if(response.indexOf("GET /dbbygqwfjcbo") != -1){
 
-       
-        digitalWrite(LED, HIGH);
-        delay(1000);
-        digitalWrite(LED, LOW);
-       
-        
+  if(response.indexOf("ERROR") != -1){
 
-      }
+    init_config();
+  }
+    
+   
       Serial.print(response);
-      
-    }    
+   
+       
     return response;                                                  
 }
 
