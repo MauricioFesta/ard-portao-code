@@ -9,9 +9,9 @@ SoftwareSerial esp8266(10,11);
 String HOST = "192.168.0.108";
 String PORT = "80";
 int countTimeCommand; 
+int contador = 0;
 
-
-long int contador = 0;
+int contador_str = 0;
 void setup()
 
 {
@@ -49,13 +49,24 @@ void loop()
          while(esp8266.available())                                      
           {
             
-              char c = esp8266.read();                                     
-              response+=c;    
-                                                        
+              char c = esp8266.read();
+              //char next = esp8266.read()+1;
+              //Serial.print(c);
+              //Serial.print("\n");
+              
+              if(contador_str > 10 && contador_str <= 23){
+
+                response+=c;
+              }
+
+               contador_str+=1;
+                                                      
           }  
 
-              Serial.print("Entrou no IF");
+
               Serial.print(response);
+             
+               contador_str = 0;
 
               digitalWrite(LED, HIGH);
               delay(1000);
@@ -65,11 +76,12 @@ void loop()
               closeCommand+=connectionId; 
               closeCommand+="\r\n"; 
               esp8266.print(closeCommand);
+              int total = response.length()+ 66;
 
-              String getData = "GET /update/idhmauricio";
+              String getData = "GET /update/"+response+"-lWHgIfmZmGTJPNbdbTONZkANSNQK-62bf9dadde59f40bb7459ce4";
               sendCommand("AT+CIPMUX=1",5,"OK");
               sendCommand("AT+CIPSTART=0,\"TCP\",\""+ HOST +"\","+ PORT,6,"OK");
-              sendCommand("AT+CIPSEND=0,"+String(23),2,">");
+              sendCommand("AT+CIPSEND=0,"+String(total),2,">");
               esp8266.println(getData);delay(1500);
               sendCommand("AT+CIPCLOSE=0",5,"OK");
                     
@@ -88,7 +100,7 @@ void sendCommand(String command, int maxTime, char readReplay[]) {
     esp8266.println(command);//at+cipsend
     if(esp8266.find(readReplay))//ok
     {
-       Serial.println("OYI");
+       //Serial.println("OYI");
       break;
     }
   
