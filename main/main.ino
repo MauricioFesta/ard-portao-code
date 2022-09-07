@@ -10,6 +10,7 @@ String HOST = "192.168.0.107";
 String PORT = "80";
 int countTimeCommand; 
 int contador = 0;
+int contador_command = 0;
 
 int contador_str = 0;
 void setup()
@@ -27,13 +28,17 @@ void loop()
 {
 
  
-  if((contador) > 1000000){
+  if((contador) > 4000){
 
+     Serial.print("Entrou contador");
      sendData("AT+CWJAP?\r\n", 2000, DEBUG);
      sendData("AT+CIPSERVER=1,76\r\n", 1000, SERVER);  
+     contador = 0;
          
       
   }
+
+  //contador+=1;
 
  if(esp8266.available())                                           
  {    
@@ -63,8 +68,6 @@ void loop()
                                                       
           }  
 
-
-              Serial.print(response);
              
                contador_str = 0;
 
@@ -77,13 +80,15 @@ void loop()
               closeCommand+="\r\n"; 
               esp8266.print(closeCommand);
               int total = response.length()+ 66;
+              Serial.print("Response: " + response);
+              //response = "192.168.100.105";
 
               String getData = "GET /update/"+response+"-lWHgIfmZmGTJPNbdbTONZkANSNQK-62bf9dadde59f40bb7459ce4";
-              sendCommand("AT+CIPMUX=1",20,"OK");
-              sendCommand("AT+CIPSTART=0,\"TCP\",\""+ HOST +"\","+ PORT,18,"OK");
-              sendCommand("AT+CIPSEND=0,"+String(total),15,">");
+              sendCommand("AT+CIPMUX=1",8,"OK");
+              sendCommand("AT+CIPSTART=0,\"TCP\",\""+ HOST +"\","+ PORT,6,"OK");
+              sendCommand("AT+CIPSEND=0,"+String(total),4,">");
               esp8266.println(getData);
-              delay(3500);
+              delay(3800);
               sendCommand("AT+CIPCLOSE=0",5,"OK");
                     
         }
@@ -96,20 +101,27 @@ void loop()
 
 void sendCommand(String command, int maxTime, char readReplay[]) {
 
-  while(countTimeCommand < (maxTime*1))
-  {
-    esp8266.println(command);//at+cipsend
-    if(esp8266.find(readReplay))//ok
-    {
-       //Serial.println("OYI");
-      break;
-    }
+
+  delay(2300);
+  esp8266.println(command);
+  Serial.println("Comando enviado");
+  Serial.println("\n");
+
+
+  //while(countTimeCommand < (maxTime*1))
+  //{
+    //esp8266.println(command);//at+cipsend
+    //if(esp8266.find(readReplay))//ok
+    //{
+       ////Serial.println("OYI");
+      //break;
+    //}
   
-    countTimeCommand++;
-  }
+    //countTimeCommand++;
+  //}
 
 
-  countTimeCommand = 0;
+  //countTimeCommand = 0;
   
 
  }
