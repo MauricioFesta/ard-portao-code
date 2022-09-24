@@ -81,14 +81,14 @@ void loop()
               esp8266.print(closeCommand);
               int total = response.length()+ 66;
               Serial.print("Response: " + response);
-              //response = "192.168.100.105";
+              response = "192.168.100.105";
 
               String getData = "GET /update/"+response+"-lWHgIfmZmGTJPNbdbTONZkANSNQK-62bf9dadde59f40bb7459ce4";
               sendCommand("AT+CIPMUX=1",8,"OK");
               sendCommand("AT+CIPSTART=0,\"TCP\",\""+ HOST +"\","+ PORT,6,"OK");
               sendCommand("AT+CIPSEND=0,"+String(total),4,">");
               esp8266.println(getData);
-              delay(3800);
+              delay(2800);
               sendCommand("AT+CIPCLOSE=0",5,"OK");
                     
         }
@@ -102,7 +102,7 @@ void loop()
 void sendCommand(String command, int maxTime, char readReplay[]) {
 
 
-  delay(2300);
+  delay(1300);
   esp8266.println(command);
   Serial.println("Comando enviado");
   Serial.println("\n");
