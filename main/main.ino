@@ -6,7 +6,7 @@ SoftwareSerial esp8266(10,11);
 #define DEBUG false       
 #define LED 8                          
 #define SERVER true
-String HOST = "192.168.0.107";
+String HOST = "192.168.0.108";
 String PORT = "80";
 int countTimeCommand; 
 int contador = 0;
@@ -81,7 +81,7 @@ void loop()
               esp8266.print(closeCommand);
               int total = response.length()+ 66;
               Serial.print("Response: " + response);
-              response = "192.168.100.105";
+              //response = "192.168.100.105";
 
               String getData = "GET /update/"+response+"-lWHgIfmZmGTJPNbdbTONZkANSNQK-62bf9dadde59f40bb7459ce4";
               sendCommand("AT+CIPMUX=1",8,"OK");
